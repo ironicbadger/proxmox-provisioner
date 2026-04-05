@@ -1,0 +1,59 @@
+tailnet:
+  # api_key: tskey-api-...
+  # api_key_env: TS_TAILSCALE_API_KEY
+  # oauth:
+  #   client_id: tskey-client-id
+  #   client_secret: tskey-client-secret
+  #   client_id_env: TS_TAILSCALE_OAUTH_CLIENT_ID
+  #   client_secret_env: TS_TAILSCALE_OAUTH_CLIENT_SECRET
+  #   tags:
+  #     - tag:container
+  #   preauthorized: true
+  #   ssh: true
+
+connections:
+  fwd:
+    ssh:
+      target: root@proxmox.example.ts.net
+      auth: auto
+    defaults:
+      start_id: 2000
+
+profiles:
+  debian-docker-lxc:
+    connection: fwd
+    kind: lxc
+    # locale: en_US.UTF-8
+    tag: pprov
+    template_match: debian
+    updated: true
+    root_password_env: PPROV_LXC_ROOT_PASSWORD
+    cores: 2
+    memory: 2048
+    rootfs_gb: 16
+    features:
+      - nesting=1
+    addons:
+      - bootstrap-tools
+      - docker
+      - tailscale
+      - lxc-tun
+      - ip-forwarding
+      - udp-gro-forwarding
+      - zaphod-user
+    shell_snippet: snippets/post-install/homelab-base.sh
+
+  ubuntu-cloudinit-vm:
+    connection: fwd
+    kind: vm
+    # locale: en_US.UTF-8
+    template_match: ubuntu
+    updated: true
+    cores: 2
+    memory: 4096
+    disk_gb: 32
+    addons:
+      - bootstrap-tools
+      - docker
+      - tailscale
+    cloud_init_snippet: snippets/cloud-init/base-user-data.yaml

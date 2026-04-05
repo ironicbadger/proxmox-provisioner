@@ -1,0 +1,9 @@
+.tsnet-state/
+bin/
+dist/
+/pprov
+/pprov.yaml
+__pycache__/
+.pytest_cache/
+.venv/
+.env
