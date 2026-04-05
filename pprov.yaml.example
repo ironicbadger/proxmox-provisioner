@@ -1,0 +1,38 @@
+tailnet:
+  api_key: TS_API_KEY
+  oauth:
+    client_id: TS_OAUTH_CLIENT_ID
+    client_secret: TS_OAUTH_CLIENT_SECRET
+    tags:
+      - tag:container
+    preauthorized: true
+    ssh: true
+
+connections:
+  fwd:
+    ssh:
+      target: user@proxmost-host.ts.net
+      auth: auto
+    defaults:
+      start_id: 5000
+
+profiles:
+  debian-docker-lxc:
+    connection: fwd
+    kind: lxc
+    locale: en_US.UTF-8
+    tag: pprov
+    template_match: debian
+    updated: true
+    root_password_env: PPROV_LXC_ROOT_PASSWORD
+    cores: 4
+    memory: 4096
+    rootfs_gb: 16
+    features:
+      - nesting=1
+    addons:
+      - bootstrap-tools
+      - docker
+      - tailscale
+      - lxc-tun
+    shell_snippet: examples/snippets/post-install/homelab-base.sh
